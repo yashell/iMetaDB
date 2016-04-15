@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <title> new document </title>
+  <meta name="generator" content="editplus" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="author" content="" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+ </head>
+ <SCRIPT LANGUAGE="JavaScript" src="aa.json"></SCRIPT>
+<style type="text/css">
+body{margin:0px;padding:0px;}
+#sheepn{background:#666;color:#fff; cursor:default;}
+#sheep{margin-bottom:0px; cursor:pointer;}
+table tr{background:#fff;}
+table tr:hover{background:#fff0e2;}
+#sheep input{border:1px solid #ccc; width:200px; height:30px;}
+#dd{width:100%;height:100px;margin: 0 auto;}
+.nnn{position:fixed;bottom:0px;width:100%;padding-top:20px;background-color:#FFC;}
+#mag {background:#b6b6b6}
+#mag input{border:1px solid #ccc;width:98%; height:24px;}
+</style>
+ <body>
+<h1></h1>
+<table id="sheep" width="100%" cellspacing="1" cellpadding="5" border="0" bgcolor="#cccccc"></table>
+<table  id="" width="100%" cellspacing="1" cellpadding="5" border="0" bgcolor="#cccccc">
+  <tr id="mag"><!--  生成的样子  <td><input type="text" id="addData0" /></td>  --></tr>
+</table>
+<div class="nnn">
+IE8无法显示当前页面添加，但不影响json生成，IE9+完美兼容,其他浏览器请复制代码贴在json文件中(---单击自动全选---)<br>
+<textarea id="dd" rows="" cols="5" onclick="Myselect_txtarea(this)"></textarea>
+</div>
+
+<script text/javascript >
+//生成文件代码
+//document.getElementById("test").innerHTML="aa"
+//function createFile()
+//{
+////如果为空提示不能提交
+//if(document.getElementById("dd").innerHTML== ""){
+//	alert("没生成json,现在提交会导致清空数据表"); 
+//	return false;
+//}
+// var fso, f1;
+// var ForReading=1;
+// fso=new ActiveXObject("Scripting.FileSystemObject");
+// f1=fso.CreateTextFile("aa.json",true,true);
+// f1.WriteLine(b.innerHTML);    //文档内容为b.innerHTML
+// f1.Close();
+// location.reload()
+//}
+
+//获取表名
+for(tkey in json){
+document.getElementsByTagName("h1")[0].innerHTML="表名:"+tkey;
+}
+//以下这段将json为调取为table
+var callback=document.getElementById("sheep");
+callback.innerHTML+="<tr id=\"sheepn\">" ;
+callback.innerHTML+="</tr>" ;
+//json key直接生成会有问题，只能先生成table第一个tr,然后给那个tr赋值
+for(key in json.people[0]) {
+document.getElementById("sheep").getElementsByTagName("tr")[0].innerHTML+="<td>"+key+"</td>";
+}
+document.getElementById("sheep").getElementsByTagName("tr")[0].innerHTML+="<td>操作</td>"   //第一行加操作
+//自动生成添加数据时的input
+for(m=0;m<document.getElementById("sheep").getElementsByTagName("tr")[0].getElementsByTagName("td").length-1;m++){
+document.getElementById("mag").innerHTML+=" <td><input type=\"text\" id=\"addData"+m+"\" placeholder=\"请输入数据\" /></td>";
+}
+document.getElementById("mag").innerHTML+="<td ><input type=\"submit\" onclick=\"add()\" value=\"----添加数据并成生代码----\"/></td>"
+
+
+
+
+//自动识别json有几列并生成table
+for(i=0;i<document.getElementById("sheep").getElementsByTagName("tr").length;i++){
+
+ for (var i = 0; i < json.people.length; i++) {
+		callback.innerHTML+="<tr>"
+        for (var attr in json.people[i]) {
+            document.getElementById("sheep").getElementsByTagName("tr")[i+1].innerHTML+="<td ondblclick=\"up(this)\">"+json.people[i][attr]+"</td>"
+        }
+		document.getElementById("sheep").getElementsByTagName("tr")[i+1].innerHTML+="<td bgcolor=\"#e0e0e0\" onclick=\"det("+eval(i+1)+")\">删除"+ eval(i+1)+"</td>"
+	callback.innerHTML+="</tr>"
+    }	
+}
+//点击选中里边的内容
+function Myselect_txtarea(obj){
+obj.select();
+}
+//add--将table数据生成json--
+
+
+//alert(count);
+
+function add(){
+//如果为空提示不能提交
+count=0
+for(key in json.people[0]) {
+ if(json.people[0][key]){
+ count++
+ }
+}  //获取有多少列
+iffalse="document.getElementById(\"addData0\").value== \"\""
+for(i=1;i<count;i++){
+iffalse+=" && document.getElementById(\"addData"+i+"\").value== \"\" "
+}
+if(eval(iffalse)){    //把代码eval出来
+	alert("一个数据都没输入，你提交什么"); 
+	return false;
+}
+//如果为空提示不能提交 end
+a=document.getElementById("sheep").getElementsByTagName("tr");
+b=document.getElementById("dd");
+c=document.getElementById("sheep").getElementsByTagName("tr")[0].getElementsByTagName("td");
+b.innerHTML=" var json = { 'people': [";
+//以下这段是将json转换成table
+for(i=1;i<a.length;i++){
+b.innerHTML+="{"
+	for(k=0;k<c.length-1;k++){   //这里减1是为了少操作那栏
+	var xx=a[i].getElementsByTagName("td")[k].innerHTML;
+	yy=c[k].innerHTML;
+	b.innerHTML+="'"+yy+"':'"+xx+"',";
+	}
+b.innerHTML+="}\,";
+}//end
+//以下这段是新增加的数据  把table数据转成json数据以便后边添加
+	for(k=0;k<c.length;k++){
+b.innerHTML+="{"
+	for(k=0;k<c.length-1;k++){    //这里减1是为了json转table主体内容时少操作那栏
+	var ad=document.getElementById("mag").getElementsByTagName("td")[k].getElementsByTagName("input")[0].value.replace(/\'/g,'’') 
+	yy=c[k].innerHTML
+	b.innerHTML+="'"+yy+"':'"+ad+"',"
+	}
+b.innerHTML+="}\,"	
+	}//end
+b.innerHTML+="]}";
+//生成
+ var fso, f1;
+ var ForReading=1;
+ fso=new ActiveXObject("Scripting.FileSystemObject");
+ f1=fso.CreateTextFile("aa.json",true,true);
+ f1.WriteLine(b.innerHTML);    //文档内容为b.innerHTML
+ f1.Close();
+ location.reload()
+//这段是把添加的数据即时显示到table里，后为了优化删除了
+//var she=""
+//for(i=0;i<c.length;i++){
+//she+="<td>"+eval("document.getElementById(\"addData"+i+"\").value")+"</td>";
+//}
+//document.getElementById("sheep").appendChild(document.createElement("tr")).innerHTML=she;
+//将临时显示到table并生成json end
+}
+//add--end--   
+//delet--BEGIN--  
+function det(numm){
+sd=document.getElementById("sheep").getElementsByTagName("tr")
+
+for(i=0;i<sd.length;i++){
+	if(i==numm){
+    var ax=document.getElementById("sheep").getElementsByTagName("tr");
+	ax[i].parentNode.removeChild(ax[i])
+	}
+}
+a=document.getElementById("sheep").getElementsByTagName("tr");
+b=document.getElementById("dd");
+c=document.getElementById("sheep").getElementsByTagName("tr")[0].getElementsByTagName("td");
+b.innerHTML=" var json = { 'people': [";
+//以下这段是将json转换成table
+for(i=1;i<a.length;i++){
+b.innerHTML+="{"
+	for(k=0;k<c.length-1;k++){   //这里减1是为了少操作那栏
+	var xx=a[i].getElementsByTagName("td")[k].innerHTML;
+	yy=c[k].innerHTML;
+	b.innerHTML+="'"+yy+"':'"+xx+"',";
+	}
+b.innerHTML+="}\,";
+}//end
+b.innerHTML+="]}";
+if(document.getElementById("dd").innerHTML== ""){
+	alert("没生成json,现在提交会导致清空数据表"); 
+	return false;
+}
+ var fso, f1;
+ var ForReading=1;
+ fso=new ActiveXObject("Scripting.FileSystemObject");
+ f1=fso.CreateTextFile("aa.json",true,true);
+ f1.WriteLine(b.innerHTML);    //文档内容为b.innerHTML
+ f1.Close();
+ location.reload()
+}
+//delet--END--  
+//updata--BEGIN--  
+function up(a){
+	a.innerHTML="<input type=\"text\" onblur=\" upd(this) \" value=\"" +a.innerHTML+ "\"/>"
+
+//	a.innerHTML='<textarea  onblur=" upd(this) " >'+a.innerHTML+'</textarea>'
+}
+function upd(a){
+a.parentNode.innerHTML=a.value.replace(/\'/g,'’')  //把"替换成中文的，免得代码出错
+//生成b.innerHTML
+a=document.getElementById("sheep").getElementsByTagName("tr");
+b=document.getElementById("dd");
+c=document.getElementById("sheep").getElementsByTagName("tr")[0].getElementsByTagName("td");
+b.innerHTML=" var json = { 'people': [";
+//以下这段是将json转换成table
+for(i=1;i<a.length;i++){
+b.innerHTML+="{"
+	for(k=0;k<c.length-1;k++){   //这里减1是为了少操作那栏
+	var xx=a[i].getElementsByTagName("td")[k].innerHTML;
+	yy=c[k].innerHTML;
+	b.innerHTML+="'"+yy+"':'"+xx+"',";
+	}
+b.innerHTML+="}\,";
+}//end
+b.innerHTML+="]}";
+ var fso, f1;
+ var ForReading=1;
+ fso=new ActiveXObject("Scripting.FileSystemObject");
+ f1=fso.CreateTextFile("aa.json",true,true);
+ f1.WriteLine(b.innerHTML);    //文档内容为b.innerHTML
+ f1.Close();
+ location.reload()
+}
+//updata--END--  
+  </script>
+ </body>
+</html>
